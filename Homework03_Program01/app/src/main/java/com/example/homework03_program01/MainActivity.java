@@ -42,16 +42,7 @@ public class MainActivity extends AppCompatActivity {
         //See if anything was passed from a different intent
 
         Bundle info = getIntent().getExtras();
-        if (info == null)
-        {
-            //Nothing was passed
-            //Log.d("info","null");
-        }
-        else
-        {
-            //Something was passed, figure out what it was
 
-        }
     }
 
     public void setAddUserButtonEvent()

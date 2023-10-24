@@ -6,14 +6,14 @@ public class User {
     private String uName;
     private String password;
     private String email;
-    private int age;
+    private String age;
 
     public User()
     {
 
     }
 
-    public User(String f, String l, String u, String p, String e, int a)
+    public User(String f, String l, String u, String p, String e, String a)
     {
         fName = f;
         lName = l;
@@ -63,11 +63,11 @@ public class User {
         email = e;
     }
 
-    public int getAge() {
+    public String getAge() {
         return age;
     }
 
-    public void setAge(int a) {
+    public void setAge(String a) {
         age = a;
     }
 

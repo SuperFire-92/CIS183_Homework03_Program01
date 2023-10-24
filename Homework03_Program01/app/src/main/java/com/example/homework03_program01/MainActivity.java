@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -19,6 +20,8 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<User> userList;
     ListAdapter adapter;
     Intent int_j_addUser;
+    Intent int_j_displayUser;
+    DatabaseHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,23 +29,27 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //Attach the variable to their activity counterparts
-        lv_j_ma_userList = findViewById(R.id.lv_v_ma_userList);
-        btn_j_ma_addUser = findViewById(R.id.btn_v_ma_addUser);
-
-        int_j_addUser = new Intent(MainActivity.this, AddUser.class);
+        lv_j_ma_userList  = findViewById(R.id.lv_v_ma_userList);
+        btn_j_ma_addUser  = findViewById(R.id.btn_v_ma_addUser);
+        int_j_addUser     = new Intent(MainActivity.this, AddUser.class);
+        int_j_displayUser = new Intent(MainActivity.this, DisplayUser.class);
 
         //Make a new instance of the userList
         userList = new ArrayList<User>();
 
+        //Make a new instance of the DatabaseHelper
+        dbHelper = new DatabaseHelper(this);
+
+        //Set the userList ArrayList to match the database
+        userList = dbHelper.getAllRows();
+
         //Set the listview to show the list
         fillListView();
 
+
         setAddUserButtonEvent();
-
-        //See if anything was passed from a different intent
-
-        Bundle info = getIntent().getExtras();
-
+        setListClickEvent();
+        setListLongClickEvent();
     }
 
     public void setAddUserButtonEvent()
@@ -57,6 +64,33 @@ public class MainActivity extends AppCompatActivity {
                 //adapter.notifyDataSetChanged();
 
                 startActivity(int_j_addUser);
+            }
+        });
+    }
+
+    public void setListClickEvent()
+    {
+        lv_j_ma_userList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                //Log.d("Listview clicked",i + "");
+
+                int_j_displayUser.putExtra("itemInList",i);
+                startActivity(int_j_displayUser);
+            }
+        });
+    }
+
+    public void setListLongClickEvent()
+    {
+        lv_j_ma_userList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                //Deletes the clicked user
+                dbHelper.deleteUser(userList.get(i));
+                userList.remove(i);
+                adapter.notifyDataSetChanged();
+                return false;
             }
         });
     }
